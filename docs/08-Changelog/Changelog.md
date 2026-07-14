@@ -7,6 +7,7 @@ created: 2026-07-02
 # Changelog
 
 ## [Unreleased]
+- Changed the interactive pet demo from manual snack drops to a simulated prompt, agent run, token meter, and automatic snack drop at 20,000 tokens.
 - Fixed pet movement facing direction and improved the desktop layout for the lovable-underneath features section.
 - Added footer links, local SEO/social metadata, JSON-LD, crawler files, and generated OG/favicon assets.
 - Added the download section with OS-matched CTA enhancement, platform release links, unsigned-build first-launch guidance, and Ko-fi support strip.

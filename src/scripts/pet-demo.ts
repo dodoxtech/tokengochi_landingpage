@@ -9,10 +9,18 @@ type FoodItem = {
   x: number;
 };
 
-const WALK_SPEED = 80;
+const WALK_SPEED = 200;
 const PET_WIDTH = 136;
 const FOOD_SIZE = 32;
-const MAX_QUEUE = 3;
+const TOKEN_GOAL = 20_000;
+const PROMPT = "build the next tiny pet feature";
+const AGENT_STEPS = [
+  "Reading local session logs...",
+  "Planning a small change...",
+  "Editing files...",
+  "Running checks...",
+  "Summarizing the result...",
+];
 
 const sleep = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
@@ -41,13 +49,18 @@ function initPetDemo(root: PetDemoRoot) {
   if (root.dataset.initialized === "true") return;
   root.dataset.initialized = "true";
 
-  const button = root.querySelector<HTMLButtonElement>(".snack-button");
+  const button = root.querySelector<HTMLButtonElement>(".run-button");
   const track = root.querySelector<HTMLElement>(".demo-track");
+  const petWrap = root.querySelector<HTMLElement>("[data-pet-wrap]");
   const pet = root.querySelector<HTMLElement>("[data-pet]");
   const foodLayer = root.querySelector<HTMLElement>("[data-food-layer]");
   const toastLayer = root.querySelector<HTMLElement>("[data-toast-layer]");
   const liveRegion = root.querySelector<HTMLElement>("[data-live-region]");
-  const queueCount = root.querySelector<HTMLElement>("[data-queue-count]");
+  const promptInput = root.querySelector<HTMLInputElement>("[data-prompt-input]");
+  const agentLog = root.querySelector<HTMLElement>("[data-agent-log]");
+  const agentStatus = root.querySelector<HTMLElement>("[data-agent-status]");
+  const tokenCount = root.querySelector<HTMLElement>("[data-token-count]");
+  const tokenMeter = root.querySelector<HTMLElement>("[data-token-meter]");
   const fullTip = root.querySelector<HTMLElement>("[data-full-tip]");
   let foodSources: string[] = [];
 
@@ -57,20 +70,37 @@ function initPetDemo(root: PetDemoRoot) {
     foodSources = [];
   }
 
-  if (!button || !track || !pet || !foodLayer || !toastLayer || !liveRegion || foodSources.length === 0) {
+  if (
+    !button ||
+    !track ||
+    !petWrap ||
+    !pet ||
+    !foodLayer ||
+    !toastLayer ||
+    !liveRegion ||
+    !promptInput ||
+    !agentLog ||
+    !agentStatus ||
+    !tokenCount ||
+    !tokenMeter ||
+    foodSources.length === 0
+  ) {
     return;
   }
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const queue: FoodItem[] = [];
   let active = false;
+  let running = false;
   let petX = 36;
-  let snackBurst = 0;
-  let burstTimer = 0;
   let fullTimer = 0;
 
-  const setQueueCount = () => {
-    if (queueCount) queueCount.textContent = String(queue.length);
+  const formatTokens = (value: number) => new Intl.NumberFormat("en-US").format(value);
+
+  const setTokenProgress = (value: number) => {
+    const tokens = clamp(Math.round(value), 0, TOKEN_GOAL);
+    tokenCount.textContent = formatTokens(tokens);
+    tokenMeter.style.setProperty("--token-progress", `${(tokens / TOKEN_GOAL) * 100}%`);
   };
 
   const setPetState = (state: "idle" | "walk" | "eat" | "full") => {
@@ -80,13 +110,12 @@ function initPetDemo(root: PetDemoRoot) {
 
   const movePet = async (targetX: number) => {
     const distance = Math.abs(targetX - petX);
-    const duration = reduceMotion.matches ? 0 : Math.max(260, (distance / WALK_SPEED) * 1000);
+    const duration = reduceMotion.matches ? 0 : Math.max(140, (distance / WALK_SPEED) * 1000);
     const shouldFlipSprite = targetX > petX;
 
     pet.classList.toggle("is-facing-right", shouldFlipSprite);
-    pet.style.setProperty("--pet-x", `${targetX}px`);
-    pet.style.transitionDuration = `${duration}ms`;
-    pet.style.transform = `translateX(${targetX}px) ${shouldFlipSprite ? "scaleX(-1) " : ""}scale(0.74)`;
+    petWrap.style.transitionDuration = `${duration}ms`;
+    petWrap.style.transform = `translateX(${targetX}px)`;
     setPetState("walk");
 
     if (duration === 0) {
@@ -94,14 +123,14 @@ function initPetDemo(root: PetDemoRoot) {
       return;
     }
 
-    await once(pet, "transitionend", duration + 80);
+    await once(petWrap, "transitionend", duration + 80);
     petX = targetX;
   };
 
   const showToast = (x: number) => {
     const toast = document.createElement("span");
     toast.className = "xp-toast";
-    toast.textContent = "+1 XP";
+    toast.textContent = "+1 snack";
     toast.style.setProperty("--toast-x", `${x + 42}px`);
     toastLayer.append(toast);
     window.setTimeout(() => toast.remove(), reduceMotion.matches ? 900 : 820);
@@ -110,7 +139,6 @@ function initPetDemo(root: PetDemoRoot) {
   const showFullTip = () => {
     if (!fullTip) return;
     fullTip.hidden = false;
-    setPetState("full");
     window.clearTimeout(fullTimer);
     fullTimer = window.setTimeout(() => {
       fullTip.hidden = true;
@@ -129,7 +157,6 @@ function initPetDemo(root: PetDemoRoot) {
     active = true;
 
     while (queue.length > 0) {
-      setQueueCount();
       const food = queue.shift();
       if (!food) break;
 
@@ -139,52 +166,110 @@ function initPetDemo(root: PetDemoRoot) {
 
       setPetState("eat");
       food.element.classList.add("is-eaten");
-      liveRegion.textContent = "Pet ate a snack";
+      liveRegion.textContent = "Agent reached 20,000 tokens and the pet ate a snack";
       showToast(targetX);
       await sleep(reduceMotion.matches ? 260 : 620);
       food.element.remove();
       setPetState("idle");
-      setQueueCount();
       await sleep(reduceMotion.matches ? 20 : 120);
     }
 
     active = false;
-    setQueueCount();
     if (!fullTip || fullTip.hidden) setPetState("idle");
   };
 
-  const dropSnack = () => {
-    if (queue.length >= MAX_QUEUE) {
+  const typePrompt = async () => {
+    if (promptInput.value.trim() !== "") return;
+
+    if (reduceMotion.matches) {
+      promptInput.value = PROMPT;
+      return;
+    }
+
+    for (const character of PROMPT) {
+      promptInput.value += character;
+      await sleep(24);
+    }
+  };
+
+  const runAgentMeter = async () => {
+    if (reduceMotion.matches) {
+      agentLog.textContent = AGENT_STEPS[AGENT_STEPS.length - 1];
+      setTokenProgress(TOKEN_GOAL);
+      return;
+    }
+
+    const totalTicks = 32;
+    for (let tick = 1; tick <= totalTicks; tick += 1) {
+      const progress = tick / totalTicks;
+      const eased = 1 - Math.pow(1 - progress, 2);
+      const stepIndex = Math.min(AGENT_STEPS.length - 1, Math.floor(progress * AGENT_STEPS.length));
+      agentLog.textContent = AGENT_STEPS[stepIndex];
+      setTokenProgress(eased * TOKEN_GOAL);
+      await sleep(72);
+    }
+
+    setTokenProgress(TOKEN_GOAL);
+  };
+
+  const dropSnack = async () => {
+    if (queue.length > 0 || active) {
       denySnack();
       return;
     }
 
     const maxX = Math.max(FOOD_SIZE + 24, track.clientWidth - FOOD_SIZE - 36);
-    const x = Math.round(40 + Math.random() * (maxX - 40));
+    const x = Math.round(clamp(track.clientWidth * 0.72, 64, maxX));
     const food = document.createElement("img");
-    food.className = "demo-food";
-    food.src = foodSources[Math.floor(Math.random() * foodSources.length)];
+    food.className = "demo-food is-dropping";
+    food.src = foodSources[0];
     food.alt = "";
     food.width = FOOD_SIZE;
     food.height = FOOD_SIZE;
     food.style.setProperty("--food-x", `${x}px`);
     foodLayer.append(food);
 
+    if (!reduceMotion.matches) {
+      await once(food, "animationend", 620);
+    }
+
+    food.classList.remove("is-dropping");
     queue.push({ element: food, x });
-    setQueueCount();
-
-    snackBurst += 1;
-    window.clearTimeout(burstTimer);
-    burstTimer = window.setTimeout(() => {
-      snackBurst = 0;
-    }, 2600);
-    if (snackBurst >= 5) showFullTip();
-
     void processQueue();
   };
 
-  button.addEventListener("click", dropSnack);
-  setQueueCount();
+  const runPrompt = async () => {
+    if (running || active) {
+      denySnack();
+      return;
+    }
+
+    running = true;
+    button.disabled = true;
+    promptInput.disabled = true;
+    agentStatus.textContent = "Typing";
+    setTokenProgress(0);
+    if (fullTip) fullTip.hidden = true;
+
+    await typePrompt();
+    agentStatus.textContent = "Agent running";
+    await runAgentMeter();
+    agentStatus.textContent = "Snack unlocked";
+    showFullTip();
+    await dropSnack();
+    await sleep(reduceMotion.matches ? 60 : 360);
+
+    agentStatus.textContent = "Ready";
+    button.disabled = false;
+    promptInput.disabled = false;
+    promptInput.value = "";
+    running = false;
+  };
+
+  button.addEventListener("click", () => {
+    void runPrompt();
+  });
+  setTokenProgress(0);
 }
 
 export function initPetDemos() {
