@@ -1,0 +1,748 @@
+---
+import PixelButton from "./PixelButton.astro";
+import PixelCard from "./PixelCard.astro";
+import hatchlingSheet from "../assets/sprites/hatchling/hatchling.png?url";
+
+const releasesUrl = "https://github.com/dodoxtech/tokengochi/releases/latest";
+const kofiUrl = "https://ko-fi.com/dodoxtech";
+
+let releaseVersion: string | undefined;
+
+try {
+  const response = await fetch(
+    "https://api.github.com/repos/dodoxtech/tokengochi/releases/latest",
+    {
+      headers: {
+        Accept: "application/vnd.github+json",
+      },
+    },
+  );
+
+  if (response.ok) {
+    const release = await response.json();
+    releaseVersion =
+      typeof release.tag_name === "string" && release.tag_name.length > 0
+        ? release.tag_name
+        : undefined;
+  }
+} catch {
+  releaseVersion = undefined;
+}
+
+const platforms = [
+  {
+    os: "macOS",
+    icon: "mac",
+    files: ["Tokengochi_x.y.z_aarch64.dmg", "Tokengochi_x.y.z_x64.dmg"],
+    note: "Choose the DMG that matches your Mac chip.",
+  },
+  {
+    os: "Windows",
+    icon: "windows",
+    files: ["Tokengochi_x.y.z_x64-setup.exe"],
+    note: "Use the x64 setup file from the latest release.",
+  },
+  {
+    os: "Linux",
+    icon: "linux",
+    files: ["tokengochi_x.y.z_amd64.deb", "tokengochi_x.y.z_amd64.AppImage"],
+    note: "Ubuntu and Debian users want the .deb; other distros can use AppImage.",
+  },
+];
+
+const warnings = [
+  {
+    os: "macOS",
+    steps:
+      'Gatekeeper blocks the app: "cannot be opened because the developer cannot be verified". Right-click the app, choose Open, then choose Open again in the dialog. If that does not work, run the command below in Terminal.',
+    code: "xattr -dr com.apple.quarantine /Applications/Tokengochi.app",
+  },
+  {
+    os: "Windows",
+    steps:
+      'SmartScreen shows "Windows protected your PC". Click More info, then Run anyway.',
+  },
+  {
+    os: "Linux",
+    steps:
+      "There is no OS-level warning. Mark the AppImage executable before running it.",
+    code: "chmod +x Tokengochi_x.y.z_amd64.AppImage",
+  },
+];
+---
+
+<section id="download" class="relative bg-night px-6 py-16 sm:py-20 lg:py-24">
+  <div class="mx-auto max-w-[1100px]">
+    <div class="download-shell">
+      <div class="download-intro" data-reveal>
+        <p class="download-kicker">
+          {releaseVersion ? `Latest release ${releaseVersion}` : "Latest release"}
+        </p>
+        <h2 class="font-heading text-3xl leading-tight text-text sm:text-4xl">
+          Bring the hungry little desk friend home.
+        </h2>
+        <p class="mt-4 font-body text-base leading-7 text-text-dim sm:text-lg">
+          Download Tokengochi from GitHub Releases. The installer link works
+          without JavaScript; your browser can make it OS-specific when it can
+          identify your platform.
+        </p>
+
+        <div class="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+          <PixelButton
+            href={releasesUrl}
+            variant="primary"
+            class="download-primary"
+            data-download-primary
+          >
+            Download
+          </PixelButton>
+          <a
+            href={releasesUrl}
+            class="download-secondary-link"
+            data-all-platforms-link
+          >
+            All platforms
+          </a>
+        </div>
+      </div>
+
+      <div class="download-pet-wrap" aria-hidden="true">
+        <div
+          class="download-pet pixelated"
+          style={`background-image: url(${hatchlingSheet})`}
+        ></div>
+      </div>
+    </div>
+
+    <div class="platform-grid mt-10" aria-label="Download options by platform">
+      {
+        platforms.map((platform, index) => (
+          <PixelCard class="platform-card">
+            <article
+              class="platform-row"
+              data-reveal
+              style={`--reveal-delay: ${80 + index * 60}ms`}
+            >
+              <div class:list={["os-icon", `os-icon--${platform.icon}`]} aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <div class="platform-copy">
+                <h3>{platform.os}</h3>
+                <p>{platform.note}</p>
+              </div>
+              <div class="platform-files" aria-label={`${platform.os} release files`}>
+                {platform.files.map((file) => (
+                  <a href={releasesUrl}>{file}</a>
+                ))}
+              </div>
+            </article>
+          </PixelCard>
+        ))
+      }
+    </div>
+
+    <PixelCard class="warning-card mt-10">
+      <div class="warning-heading" data-reveal>
+        <h3>Your OS will act suspicious. That's expected.</h3>
+        <p>
+          MVP builds are unsigned, so first launch has one extra trust step.
+          After that, Tokengochi opens normally.
+        </p>
+      </div>
+
+      <div class="warning-list">
+        {
+          warnings.map((warning, index) => (
+            <details
+              class="warning-dialog"
+              data-reveal
+              style={`--reveal-delay: ${140 + index * 60}ms`}
+            >
+              <summary>{warning.os}</summary>
+              <p>{warning.steps}</p>
+              {warning.code && (
+                <div class="code-copy">
+                  <code>{warning.code}</code>
+                  <button
+                    type="button"
+                    data-copy-code={warning.code}
+                    aria-label={`Copy ${warning.os} command`}
+                  >
+                    Copy
+                  </button>
+                  <span aria-live="polite" class="copy-status"></span>
+                </div>
+              )}
+            </details>
+          ))
+        }
+      </div>
+    </PixelCard>
+
+    <div class="support-strip mt-10" data-reveal>
+      <div class="support-pet pixelated" style={`background-image: url(${hatchlingSheet})`}></div>
+      <p>
+        Free &amp; open source. If it made your terminal less lonely
+        <a href={kofiUrl}>support Tokengochi on Ko-fi</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initReveals } from "../scripts/reveal";
+
+  initReveals();
+
+  const releasesUrl = "https://github.com/dodoxtech/tokengochi/releases/latest";
+  const primaryDownload = document.querySelector<HTMLAnchorElement>(
+    "[data-download-primary]",
+  );
+
+  if (primaryDownload) {
+    const platform =
+      navigator.userAgentData?.platform ?? navigator.platform ?? "";
+    const normalizedPlatform = platform.toLowerCase();
+    const userAgent = navigator.userAgent.toLowerCase();
+    const detectedOs = normalizedPlatform.includes("mac")
+      ? "macOS"
+      : normalizedPlatform.includes("win")
+        ? "Windows"
+        : normalizedPlatform.includes("linux") || userAgent.includes("linux")
+          ? "Linux"
+          : "";
+
+    primaryDownload.href = releasesUrl;
+
+    if (detectedOs) {
+      primaryDownload.textContent = `Download for ${detectedOs}`;
+    }
+  }
+
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-code]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const value = button.dataset.copyCode;
+      const status = button.parentElement?.querySelector<HTMLElement>(".copy-status");
+
+      if (!value || !navigator.clipboard) {
+        if (status) {
+          status.textContent = "Select and copy";
+        }
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(value);
+        button.textContent = "Copied!";
+        if (status) {
+          status.textContent = "Copied!";
+        }
+        window.setTimeout(() => {
+          button.textContent = "Copy";
+          if (status) {
+            status.textContent = "";
+          }
+        }, 1800);
+      } catch {
+        if (status) {
+          status.textContent = "Select and copy";
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  [data-reveal].reveal-pending {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  [data-reveal].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .download-shell {
+    position: relative;
+    display: grid;
+    min-height: 360px;
+    overflow: hidden;
+    border: 3px solid var(--color-ink);
+    border-radius: 8px;
+    background:
+      linear-gradient(135deg, rgba(110, 231, 160, 0.16), transparent 46%),
+      linear-gradient(180deg, rgba(245, 167, 59, 0.12), rgba(245, 167, 59, 0)),
+      var(--color-night-soft);
+    box-shadow: 6px 6px 0 var(--color-ink);
+  }
+
+  .download-intro {
+    position: relative;
+    z-index: 1;
+    max-width: 660px;
+    padding: 28px;
+  }
+
+  .download-kicker {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    border: 3px solid var(--color-token-green);
+    border-radius: 4px;
+    background: var(--color-ink);
+    padding: 0 10px;
+    color: var(--color-token-green);
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .download-primary {
+    min-width: 190px;
+    text-align: center;
+  }
+
+  .download-secondary-link {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    color: var(--color-text);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: var(--color-token-green);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+
+  .download-pet-wrap {
+    position: absolute;
+    right: -34px;
+    bottom: -28px;
+    width: 320px;
+    height: 260px;
+    border-left: 3px solid rgba(29, 24, 48, 0.6);
+    background:
+      linear-gradient(180deg, rgba(251, 240, 215, 0.92), rgba(255, 212, 102, 0.86)),
+      var(--color-cream);
+    box-shadow: inset 0 4px 0 rgba(251, 240, 215, 0.45);
+  }
+
+  .download-pet-wrap::before {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 36px;
+    height: 18px;
+    border: 3px solid var(--color-ink);
+    border-radius: 3px;
+    background: var(--color-night-soft);
+    content: "";
+  }
+
+  .download-pet {
+    position: absolute;
+    left: 54px;
+    bottom: 26px;
+    width: 184px;
+    height: 184px;
+    background-repeat: no-repeat;
+    background-position: 0 -1104px;
+    transform: scale(0.92);
+    transform-origin: bottom center;
+  }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .platform-card {
+    background:
+      linear-gradient(180deg, rgba(255, 212, 102, 0.08), rgba(255, 212, 102, 0)),
+      var(--color-night-soft);
+  }
+
+  .platform-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+  }
+
+  .platform-copy h3,
+  .warning-heading h3 {
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    line-height: 1.05;
+  }
+
+  .platform-copy p,
+  .warning-heading p,
+  .warning-dialog p,
+  .support-strip p {
+    color: var(--color-text-dim);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .platform-copy p {
+    margin-top: 0.35rem;
+  }
+
+  .platform-files {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .platform-files a {
+    display: inline-flex;
+    min-height: 34px;
+    align-items: center;
+    border: 3px solid var(--color-ink);
+    border-radius: 4px;
+    background: var(--color-cream);
+    padding: 0 10px;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    line-height: 1.15;
+    box-shadow: 3px 3px 0 rgba(29, 24, 48, 0.34);
+    overflow-wrap: anywhere;
+  }
+
+  .os-icon {
+    position: relative;
+    width: 54px;
+    height: 54px;
+    border: 3px solid var(--color-ink);
+    border-radius: 5px;
+    background: var(--color-cream);
+    box-shadow: 3px 3px 0 rgba(29, 24, 48, 0.28);
+  }
+
+  .os-icon--mac span {
+    position: absolute;
+    background: var(--color-ink);
+  }
+
+  .os-icon--mac span:nth-child(1) {
+    left: 21px;
+    top: 9px;
+    width: 11px;
+    height: 30px;
+  }
+
+  .os-icon--mac span:nth-child(2) {
+    left: 13px;
+    top: 18px;
+    width: 28px;
+    height: 12px;
+  }
+
+  .os-icon--mac span:nth-child(3) {
+    left: 14px;
+    top: 35px;
+    width: 8px;
+    height: 5px;
+    background: var(--color-token-green);
+  }
+
+  .os-icon--mac span:nth-child(4) {
+    right: 14px;
+    top: 35px;
+    width: 8px;
+    height: 5px;
+    background: var(--color-token-green);
+  }
+
+  .os-icon--windows span {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--color-token-green);
+  }
+
+  .os-icon--windows span:nth-child(1) {
+    left: 11px;
+    top: 11px;
+  }
+
+  .os-icon--windows span:nth-child(2) {
+    right: 11px;
+    top: 11px;
+  }
+
+  .os-icon--windows span:nth-child(3) {
+    left: 11px;
+    bottom: 11px;
+  }
+
+  .os-icon--windows span:nth-child(4) {
+    right: 11px;
+    bottom: 11px;
+  }
+
+  .os-icon--linux span {
+    position: absolute;
+    border: 3px solid var(--color-ink);
+    border-radius: 2px;
+    background: var(--color-moon-yellow);
+  }
+
+  .os-icon--linux span:nth-child(1) {
+    left: 18px;
+    top: 8px;
+    width: 18px;
+    height: 20px;
+  }
+
+  .os-icon--linux span:nth-child(2) {
+    left: 13px;
+    bottom: 10px;
+    width: 28px;
+    height: 17px;
+  }
+
+  .os-icon--linux span:nth-child(3) {
+    left: 11px;
+    bottom: 6px;
+    width: 10px;
+    height: 8px;
+    background: var(--color-pet-orange);
+  }
+
+  .os-icon--linux span:nth-child(4) {
+    right: 11px;
+    bottom: 6px;
+    width: 10px;
+    height: 8px;
+    background: var(--color-pet-orange);
+  }
+
+  .warning-card {
+    background:
+      linear-gradient(180deg, rgba(234, 122, 43, 0.11), rgba(234, 122, 43, 0)),
+      var(--color-night-soft);
+  }
+
+  .warning-heading {
+    max-width: 720px;
+  }
+
+  .warning-heading p {
+    margin-top: 0.55rem;
+  }
+
+  .warning-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 1.5rem;
+  }
+
+  .warning-dialog {
+    border: 3px solid var(--color-ink);
+    border-radius: 5px;
+    background: var(--color-cream);
+    color: var(--color-ink);
+    box-shadow: 4px 4px 0 rgba(29, 24, 48, 0.32);
+  }
+
+  .warning-dialog summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    line-height: 1;
+  }
+
+  .warning-dialog summary:focus-visible {
+    outline: 3px solid var(--color-token-green);
+    outline-offset: 4px;
+  }
+
+  .warning-dialog p {
+    padding: 0 16px 16px;
+    color: var(--color-ink);
+  }
+
+  .code-copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 0 16px 16px;
+  }
+
+  .code-copy code {
+    overflow-x: auto;
+    border: 3px solid var(--color-ink);
+    border-radius: 4px;
+    background: var(--color-night);
+    padding: 10px;
+    color: var(--color-token-green);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .code-copy button {
+    min-height: 38px;
+    border: 3px solid var(--color-ink);
+    border-radius: 4px;
+    background: var(--color-pet-orange);
+    padding: 0 12px;
+    color: var(--color-ink);
+    cursor: pointer;
+    font-weight: 800;
+    box-shadow: 3px 3px 0 rgba(29, 24, 48, 0.32);
+  }
+
+  .copy-status {
+    min-height: 1.25rem;
+    color: var(--color-ink);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .support-strip {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border: 3px solid var(--color-ink);
+    border-radius: 8px;
+    background:
+      linear-gradient(90deg, rgba(110, 231, 160, 0.16), transparent),
+      var(--color-night-soft);
+    padding: 16px;
+    box-shadow: 4px 4px 0 var(--color-ink);
+  }
+
+  .support-pet {
+    flex: 0 0 74px;
+    width: 184px;
+    height: 184px;
+    margin: -55px;
+    background-repeat: no-repeat;
+    background-position: 0 -1104px;
+    transform: scale(0.4);
+    transform-origin: center;
+  }
+
+  .support-strip a {
+    color: var(--color-token-green);
+    font-weight: 800;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  @media (min-width: 700px) {
+    .download-intro {
+      padding: 40px;
+    }
+
+    .platform-row {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .platform-files {
+      grid-column: auto;
+      justify-content: flex-end;
+    }
+
+    .code-copy {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .copy-status {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 980px) {
+    .download-intro {
+      padding-right: 360px;
+    }
+
+    .platform-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .platform-row {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .platform-files {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 699px) {
+    .download-shell {
+      min-height: 470px;
+    }
+
+    .download-pet-wrap {
+      right: -8px;
+      bottom: -36px;
+      width: 250px;
+      height: 218px;
+    }
+
+    .download-pet {
+      left: 32px;
+      transform: scale(0.78);
+    }
+
+    .support-strip {
+      align-items: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal].reveal-pending,
+    [data-reveal].is-revealed {
+      transition:
+        opacity 420ms ease-out var(--reveal-delay, 0ms),
+        transform 420ms ease-out var(--reveal-delay, 0ms);
+      will-change: opacity, transform;
+    }
+
+    [data-reveal].is-revealed {
+      will-change: auto;
+    }
+
+    .download-pet,
+    .support-pet {
+      animation: download-wave 950ms steps(1) infinite;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes download-wave {
+    0%,
+    100% {
+      background-position: 0 -1104px;
+    }
+
+    50% {
+      background-position: -184px -1104px;
+    }
+  }
+</style>

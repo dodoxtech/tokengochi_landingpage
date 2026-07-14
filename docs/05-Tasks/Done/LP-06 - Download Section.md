@@ -1,7 +1,7 @@
 ---
 title: LP-06 - Download Section
 tags: [task, landing-page]
-status: todo
+status: done
 priority: high
 created: 2026-07-14
 due:
@@ -21,18 +21,18 @@ due:
 - Close with the pet sprite waving + `Free & open source. If it made your terminal less lonely → Ko-fi` link.
 
 ## Acceptance criteria
-- [ ] Correct OS label on macOS, Windows, Linux user agents (test via devtools UA emulation)
-- [ ] All links resolve to the live releases page; no runtime GitHub API calls
-- [ ] `<details>` callouts keyboard-accessible with visible focus; copy button announces success to screen readers (`aria-live`)
-- [ ] Section works fully with JS disabled (generic download link)
-- [ ] Build succeeds offline (version fetch is optional-fail)
+- [x] Correct OS label on macOS, Windows, Linux user agents (test via devtools UA emulation)
+- [x] All links resolve to the live releases page; no runtime GitHub API calls
+- [x] `<details>` callouts keyboard-accessible with visible focus; copy button announces success to screen readers (`aria-live`)
+- [x] Section works fully with JS disabled (generic download link)
+- [x] Build succeeds offline (version fetch is optional-fail)
 
 ## Subtasks
-- [ ] Section layout + platform table
-- [ ] OS detection enhancement
-- [ ] Build-time version fetch with graceful fallback
-- [ ] Unsigned-build pixel dialogs + copy buttons
-- [ ] Ko-fi / open-source strip
+- [x] Section layout + platform table
+- [x] OS detection enhancement
+- [x] Build-time version fetch with graceful fallback
+- [x] Unsigned-build pixel dialogs + copy buttons
+- [x] Ko-fi / open-source strip
 
 ## Links
 - [[Tasks MOC]]
