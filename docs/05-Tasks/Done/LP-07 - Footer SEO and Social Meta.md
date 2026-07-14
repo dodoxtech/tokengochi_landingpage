@@ -1,7 +1,7 @@
 ---
 title: LP-07 - Footer SEO and Social Meta
 tags: [task, landing-page]
-status: todo
+status: done
 priority: medium
 created: 2026-07-14
 due:
@@ -23,18 +23,18 @@ due:
 - `robots.txt` + minimal `sitemap.xml` (single URL). **No analytics** — the product's whole pitch is local-first/no-tracking; the site should match.
 
 ## Acceptance criteria
-- [ ] Share preview renders correctly in opengraph.xyz checker (or local metatags preview) for Twitter/X, Discord, Slack
-- [ ] Favicon crisp at 16px in a browser tab
-- [ ] Valid JSON-LD (Google Rich Results test passes structurally)
-- [ ] Footer links all resolve; footer readable and navigable at 320px
-- [ ] Zero third-party requests on the entire page (verify in network tab)
+- [x] Share preview renders correctly in opengraph.xyz checker (or local metatags preview) for Twitter/X, Discord, Slack
+- [x] Favicon crisp at 16px in a browser tab
+- [x] Valid JSON-LD (Google Rich Results test passes structurally)
+- [x] Footer links all resolve; footer readable and navigable at 320px
+- [x] Zero third-party requests on the entire page (verify in network tab)
 
 ## Subtasks
-- [ ] Footer layout + sleeping pet
-- [ ] Head metadata + JSON-LD
-- [ ] OG image design and export
-- [ ] Favicon set
-- [ ] robots.txt / sitemap
+- [x] Footer layout + sleeping pet
+- [x] Head metadata + JSON-LD
+- [x] OG image design and export
+- [x] Favicon set
+- [x] robots.txt / sitemap
 
 ## Links
 - [[Tasks MOC]]
