@@ -81,12 +81,12 @@ function initPetDemo(root: PetDemoRoot) {
   const movePet = async (targetX: number) => {
     const distance = Math.abs(targetX - petX);
     const duration = reduceMotion.matches ? 0 : Math.max(260, (distance / WALK_SPEED) * 1000);
-    const facingLeft = targetX < petX;
+    const shouldFlipSprite = targetX > petX;
 
-    pet.classList.toggle("is-facing-left", facingLeft);
+    pet.classList.toggle("is-facing-right", shouldFlipSprite);
     pet.style.setProperty("--pet-x", `${targetX}px`);
     pet.style.transitionDuration = `${duration}ms`;
-    pet.style.transform = `translateX(${targetX}px) ${facingLeft ? "scaleX(-1) " : ""}scale(0.74)`;
+    pet.style.transform = `translateX(${targetX}px) ${shouldFlipSprite ? "scaleX(-1) " : ""}scale(0.74)`;
     setPetState("walk");
 
     if (duration === 0) {

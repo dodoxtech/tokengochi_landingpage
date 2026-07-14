@@ -7,6 +7,7 @@ created: 2026-07-02
 # Changelog
 
 ## [Unreleased]
+- Fixed pet movement facing direction and improved the desktop layout for the lovable-underneath features section.
 - Added footer links, local SEO/social metadata, JSON-LD, crawler files, and generated OG/favicon assets.
 - Added the download section with OS-matched CTA enhancement, platform release links, unsigned-build first-launch guidance, and Ko-fi support strip.
 - Added the interactive pet demo section with snack drops, queued feeding, XP toast feedback, reduced-motion support, and an overfeed easter egg.

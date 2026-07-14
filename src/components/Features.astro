@@ -174,14 +174,14 @@ const compactFeatures = [
     gap: 20px;
   }
 
-  .feature-card {
+  :global(.feature-card) {
     min-width: 0;
     background:
       linear-gradient(180deg, rgba(110, 231, 160, 0.055), rgba(110, 231, 160, 0)),
       var(--color-night-soft);
   }
 
-  .feature-card--progression {
+  :global(.feature-card--progression) {
     background:
       linear-gradient(180deg, rgba(255, 212, 102, 0.1), rgba(255, 212, 102, 0)),
       var(--color-night-soft);
@@ -476,12 +476,12 @@ const compactFeatures = [
       gap: 22px;
     }
 
-    .feature-card--big {
+    :global(.feature-card--big) {
       grid-column: span 3;
       grid-row: span 2;
     }
 
-    .feature-card--compact {
+    :global(.feature-card--compact) {
       grid-column: span 3;
     }
 
@@ -544,10 +544,10 @@ const compactFeatures = [
 
   @keyframes walk-path {
     0% {
-      transform: translateX(-62px) scale(0.74);
+      transform: translateX(-62px) scaleX(-1) scale(0.74);
     }
     100% {
-      transform: translateX(calc(100% + 62px)) scale(0.74);
+      transform: translateX(calc(100% + 62px)) scaleX(-1) scale(0.74);
     }
   }
 
