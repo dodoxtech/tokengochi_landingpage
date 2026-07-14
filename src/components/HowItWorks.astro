@@ -1,0 +1,338 @@
+---
+import PixelCard from "./PixelCard.astro";
+import foodDefault from "../assets/sprites/items/food-default-sprite-32x32.png?url";
+import foodSushi from "../assets/sprites/items/food-sushi-sprite-32x32.png?url";
+import foodBanhMi from "../assets/sprites/items/food-banh-mi-sprite-32x32.png?url";
+import hatchlingSheet from "../assets/sprites/hatchling/hatchling.png?url";
+
+const steps = [
+  {
+    number: "01",
+    title: "You code.",
+    copy: "Use Claude Code like you already do. Tokengochi tails your local session logs. Nothing leaves your machine.",
+    sprite: "editor",
+  },
+  {
+    number: "02",
+    title: "Tokens become food.",
+    copy: "Every 20,000 weighted tokens fills the food meter and drops a snack on your screen.",
+    sprite: "food",
+  },
+  {
+    number: "03",
+    title: "Your pet thrives.",
+    copy: "It runs over, eats, gains XP, and evolves over days and weeks. Miss a day? It gets hungry, not dead.",
+    sprite: "pet",
+  },
+];
+---
+
+<section id="how-it-works" class="relative bg-night px-6 py-16 sm:py-20 lg:py-24">
+  <div class="mx-auto max-w-[1100px]">
+    <div class="max-w-2xl">
+      <h2 class="font-heading text-3xl leading-tight text-text sm:text-4xl">
+        How the feeding loop works
+      </h2>
+      <p class="mt-4 font-body text-base leading-7 text-text-dim sm:text-lg">
+        Tokengochi turns normal coding activity into a gentle desktop-pet routine:
+        code, earn snacks, keep the little buddy growing.
+      </p>
+    </div>
+
+    <ol
+      class="mt-10 grid grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-7"
+      aria-label="How Tokengochi turns coding tokens into pet progress"
+    >
+      {
+        steps.map((step, index) => (
+          <li class="relative min-w-0" data-reveal style={`--reveal-delay: ${index * 80}ms`}>
+            <PixelCard class="how-card h-full">
+              <div class="flex h-full flex-col">
+                <div class="flex items-center justify-between gap-4">
+                  <span class="step-badge">{step.number}</span>
+                  <span class="step-rule" aria-hidden="true" />
+                </div>
+
+                <div class="sprite-panel mt-6" aria-hidden="true">
+                  {step.sprite === "editor" && (
+                    <div class="mini-editor pixelated">
+                      <span class="editor-bar" />
+                      <span class="editor-line editor-line--wide" />
+                      <span class="editor-line" />
+                      <span class="editor-line editor-line--accent" />
+                      <span class="editor-cursor" />
+                    </div>
+                  )}
+
+                  {step.sprite === "food" && (
+                    <div class="food-sprites">
+                      <img class="pixelated food food--default" src={foodDefault} alt="" width="32" height="32" />
+                      <img class="pixelated food food--sushi" src={foodSushi} alt="" width="32" height="32" />
+                      <img class="pixelated food food--banh-mi" src={foodBanhMi} alt="" width="32" height="32" />
+                    </div>
+                  )}
+
+                  {step.sprite === "pet" && (
+                    <div
+                      class="pet-sprite pixelated"
+                      style={`background-image: url(${hatchlingSheet})`}
+                    />
+                  )}
+                </div>
+
+                <h3 class="mt-6 font-heading text-2xl leading-tight text-text">
+                  {step.title}
+                </h3>
+                <p class="mt-3 font-body text-sm leading-6 text-text-dim sm:text-base">
+                  {step.copy}
+                </p>
+              </div>
+            </PixelCard>
+
+            {index < steps.length - 1 && <span class="connector" aria-hidden="true" />}
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="reassurance mt-8" data-reveal style="--reveal-delay: 260ms">
+      <span>Local-first</span>
+      <span>No accounts</span>
+      <span>Daily caps stop wasteful burning</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initReveals } from "../scripts/reveal";
+
+  initReveals();
+</script>
+
+<style>
+  [data-reveal].reveal-pending {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  [data-reveal].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal].reveal-pending,
+    [data-reveal].is-revealed {
+      transition:
+        opacity 420ms ease-out var(--reveal-delay, 0ms),
+        transform 420ms ease-out var(--reveal-delay, 0ms);
+      will-change: opacity, transform;
+    }
+
+    [data-reveal].is-revealed {
+      will-change: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .how-card {
+    background:
+      linear-gradient(180deg, rgba(110, 231, 160, 0.06), rgba(110, 231, 160, 0)),
+      var(--color-night-soft);
+  }
+
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3rem;
+    height: 2rem;
+    border: 3px solid var(--color-token-green);
+    border-radius: 4px;
+    background: var(--color-ink);
+    color: var(--color-token-green);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .step-rule {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--color-token-green) 0 8px,
+      transparent 8px 14px
+    );
+    opacity: 0.45;
+  }
+
+  .sprite-panel {
+    display: grid;
+    place-items: center;
+    min-height: 132px;
+    overflow: hidden;
+    border: 3px solid var(--color-ink);
+    border-radius: 6px;
+    background:
+      linear-gradient(135deg, rgba(255, 212, 102, 0.35), transparent 52%),
+      var(--color-cream);
+    box-shadow: inset 0 -4px 0 rgba(29, 24, 48, 0.12);
+  }
+
+  .mini-editor {
+    position: relative;
+    width: 112px;
+    height: 82px;
+    border: 4px solid var(--color-ink);
+    border-radius: 4px;
+    background: var(--color-night);
+    box-shadow: 6px 6px 0 rgba(29, 24, 48, 0.22);
+  }
+
+  .editor-bar {
+    display: block;
+    height: 16px;
+    border-bottom: 4px solid var(--color-ink);
+    background: var(--color-night-soft);
+  }
+
+  .editor-line {
+    display: block;
+    height: 6px;
+    width: 48px;
+    margin: 8px 0 0 12px;
+    border-radius: 1px;
+    background: var(--color-text-dim);
+    opacity: 0.8;
+  }
+
+  .editor-line--wide {
+    width: 72px;
+  }
+
+  .editor-line--accent {
+    width: 58px;
+    background: var(--color-token-green);
+    opacity: 1;
+  }
+
+  .editor-cursor {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    width: 6px;
+    height: 18px;
+    background: var(--color-moon-yellow);
+  }
+
+  .food-sprites {
+    position: relative;
+    width: 148px;
+    height: 96px;
+  }
+
+  .food {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    filter: drop-shadow(4px 6px 0 rgba(29, 24, 48, 0.2));
+  }
+
+  .food--default {
+    left: 42px;
+    top: 0;
+  }
+
+  .food--sushi {
+    left: 0;
+    bottom: 0;
+  }
+
+  .food--banh-mi {
+    right: 0;
+    bottom: 0;
+  }
+
+  .pet-sprite {
+    width: 184px;
+    height: 184px;
+    margin-bottom: -30px;
+    background-repeat: no-repeat;
+    background-position: -368px -368px;
+  }
+
+  .connector {
+    position: absolute;
+    left: calc(100% + 7px);
+    top: 50%;
+    z-index: 1;
+    display: none;
+    width: 28px;
+    height: 3px;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--color-token-green) 0 7px,
+      transparent 7px 12px
+    );
+    transform: translateY(-50%);
+  }
+
+  .connector::after {
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 9px solid var(--color-token-green);
+    content: "";
+    transform: translateY(-50%);
+  }
+
+  .reassurance {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    border: 3px solid var(--color-ink);
+    border-radius: 6px;
+    background: rgba(36, 30, 66, 0.72);
+    padding: 14px;
+    box-shadow: 4px 4px 0 var(--color-ink);
+  }
+
+  .reassurance span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
+  .reassurance span::before {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--color-ink);
+    border-radius: 2px;
+    background: var(--color-token-green);
+    content: "";
+  }
+
+  @media (min-width: 1024px) {
+    .connector {
+      display: block;
+    }
+  }
+</style>

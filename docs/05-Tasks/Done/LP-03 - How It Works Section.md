@@ -1,7 +1,7 @@
 ---
 title: LP-03 - How It Works Section
 tags: [task, landing-page]
-status: todo
+status: done
 priority: high
 created: 2026-07-14
 due:
@@ -24,17 +24,17 @@ due:
 - Below the three cards, one reassurance strip (small text, icons): `Local-first · No accounts · Daily caps stop wasteful burning` — preempts the "does this incentivize wasting tokens?" objection using the economy's diminishing-returns design.
 
 ## Acceptance criteria
-- [ ] A first-time visitor can restate the loop after reading only this section (copy review)
-- [ ] Cards keyboard/screen-reader friendly: ordered list semantics (`<ol>`), sprites have empty `alt` (decorative) with meaning carried by text
-- [ ] Layout holds at 320px (stacked), 768px (stacked or 3-up if it fits), 1024px+ (3-up with arrows)
-- [ ] Reveal animation skipped under reduced motion
+- [x] A first-time visitor can restate the loop after reading only this section (copy review)
+- [x] Cards keyboard/screen-reader friendly: ordered list semantics (`<ol>`), sprites have empty `alt` (decorative) with meaning carried by text
+- [x] Layout holds at 320px (stacked), 768px (stacked or 3-up if it fits), 1024px+ (3-up with arrows)
+- [x] Reveal animation skipped under reduced motion
 
 ## Subtasks
-- [ ] Section layout + step cards
-- [ ] Sprite panels (crop/scale from source spritesheets)
-- [ ] Connector arrows
-- [ ] IntersectionObserver reveal (one shared utility, reused by later sections)
-- [ ] Reassurance strip
+- [x] Section layout + step cards
+- [x] Sprite panels (crop/scale from source spritesheets)
+- [x] Connector arrows
+- [x] IntersectionObserver reveal (one shared utility, reused by later sections)
+- [x] Reassurance strip
 
 ## Links
 - [[Tasks MOC]]
