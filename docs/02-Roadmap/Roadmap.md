@@ -7,7 +7,7 @@ created: 2026-07-02
 # Roadmap
 
 ## Now
--
+- Landing page v1 — cozy pixel-art one-pager (hero, how-it-works, features, interactive pet demo, download, footer/SEO, deploy). Tasks: LP-01 … LP-08 in `05-Tasks/Todo/`.
 
 ## Next
 -
