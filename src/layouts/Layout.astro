@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import dmSansWoff2 from "@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url";
 import pixelifySansWoff2 from "@fontsource/pixelify-sans/files/pixelify-sans-latin-400-normal.woff2?url";
+import hatchlingSheet from "../assets/sprites/hatchling/hatchling.png?url";
 
 interface Props {
   title?: string;
@@ -37,8 +38,9 @@ const {
       type="font/woff2"
       crossorigin
     />
+    <link rel="preload" href={hatchlingSheet} as="image" fetchpriority="high" />
   </head>
-  <body class="bg-night text-text">
+  <body class="overflow-x-hidden bg-night text-text">
     <slot />
   </body>
 </html>

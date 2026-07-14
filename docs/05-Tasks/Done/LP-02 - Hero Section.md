@@ -1,7 +1,7 @@
 ---
 title: LP-02 - Hero Section
 tags: [task, landing-page]
-status: todo
+status: done
 priority: high
 created: 2026-07-14
 due:
@@ -27,18 +27,18 @@ due:
 - Hero images: inline the small sprites; `fetchpriority="high"` on the pet sprite; explicit width/height everywhere (no CLS).
 
 ## Acceptance criteria
-- [ ] Value prop readable without scrolling at 320px and 1440px
-- [ ] Animation loops smoothly, pure CSS (no JS rAF loop), <5% CPU on an idle tab
-- [ ] Reduced-motion variant verified in devtools emulation
-- [ ] CTAs are real `<a>` elements with visible focus states; anchor CTA scrolls with `scroll-behavior: smooth` (disabled under reduced motion)
-- [ ] Lighthouse: no CLS contribution from hero, LCP element is the h1 or pet sprite under 2.5s locally
+- [x] Value prop readable without scrolling at 320px and 1440px
+- [x] Animation loops smoothly, pure CSS (no JS rAF loop), <5% CPU on an idle tab
+- [x] Reduced-motion variant verified in devtools emulation
+- [x] CTAs are real `<a>` elements with visible focus states; anchor CTA scrolls with `scroll-behavior: smooth` (disabled under reduced motion)
+- [ ] Lighthouse: no CLS contribution from hero, LCP element is the h1 or pet sprite under 2.5s locally — not yet measured, revisit once the rest of the page exists
 
 ## Subtasks
-- [ ] Nav bar component
-- [ ] Hero copy + CTA layout
-- [ ] Starfield background
-- [ ] Editor→token→food→eat animation loop
-- [ ] Mobile layout pass
+- [x] Nav bar component
+- [x] Hero copy + CTA layout
+- [x] Starfield background
+- [x] Editor→token→food→eat animation loop
+- [x] Mobile layout pass
 
 ## Links
 - [[Tasks MOC]]

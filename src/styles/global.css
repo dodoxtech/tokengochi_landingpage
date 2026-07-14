@@ -25,6 +25,13 @@
     background-color: var(--color-night);
     color: var(--color-text);
     font-family: var(--font-body);
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   h1,

@@ -1,0 +1,284 @@
+---
+import hatchlingSheet from "../assets/sprites/hatchling/hatchling.png?url";
+import fruitSprite from "../assets/sprites/items/food-default-sprite-32x32.png?url";
+
+// hatchling.json: 184x184 frames, 8 cols x 4 rows on a 1472x736 sheet.
+// idle tag = frames 0-3 (single row), eat tag = frames 14-19 (wraps rows).
+const TOKENS = [0, -1.2, -2.4, -3.6, -4.8];
+---
+
+<div class="pet-scene" role="img" aria-label="A pixel pet eats fruit made from glowing tokens flying out of a tiny code editor">
+  <div class="shelf" aria-hidden="true"></div>
+
+  <div class="editor" aria-hidden="true">
+    <div class="editor-titlebar">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="editor-body">
+      <span class="code-line" style="width: 70%"></span>
+      <span class="code-line" style="width: 45%"></span>
+      <span class="code-line code-line--accent" style="width: 60%"></span>
+      <span class="code-line" style="width: 35%"></span>
+    </div>
+  </div>
+
+  {
+    TOKENS.map((delay) => (
+      <span class="token" style={`animation-delay: ${delay}s`} aria-hidden="true" />
+    ))
+  }
+
+  <img
+    class="fruit pixelated"
+    src={fruitSprite}
+    alt=""
+    width="32"
+    height="32"
+    aria-hidden="true"
+  />
+
+  <div
+    class="pet pixelated"
+    style={`background-image: url(${hatchlingSheet})`}
+    aria-hidden="true"
+  >
+  </div>
+</div>
+
+<style>
+  .pet-scene {
+    position: relative;
+    width: 440px;
+    max-width: 100%;
+    height: 360px;
+    margin-inline: auto;
+  }
+
+  @media (max-width: 640px) {
+    .pet-scene {
+      transform: scale(0.78);
+      transform-origin: top center;
+    }
+  }
+
+  .shelf {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    height: 10px;
+    background: var(--color-night-soft);
+    border: 3px solid var(--color-ink);
+    border-radius: 3px;
+  }
+
+  /* Editor window */
+  .editor {
+    position: absolute;
+    left: 12px;
+    top: 24px;
+    width: 150px;
+    border: 3px solid var(--color-ink);
+    border-radius: 6px;
+    background: var(--color-ink);
+    box-shadow: 4px 4px 0 var(--color-ink);
+    overflow: hidden;
+  }
+
+  .editor-titlebar {
+    display: flex;
+    gap: 4px;
+    padding: 5px 6px;
+    background: var(--color-night-soft);
+    border-bottom: 3px solid var(--color-ink);
+  }
+
+  .editor-titlebar span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-text-dim);
+  }
+
+  .editor-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 8px;
+  }
+
+  .code-line {
+    display: block;
+    height: 5px;
+    border-radius: 2px;
+    background: var(--color-text-dim);
+    opacity: 0.6;
+  }
+
+  .code-line--accent {
+    background: var(--color-token-green);
+    opacity: 0.9;
+    animation: code-pulse 6s ease-in-out infinite;
+  }
+
+  @keyframes code-pulse {
+    0%,
+    68%,
+    100% {
+      opacity: 0.9;
+    }
+    8%,
+    62% {
+      opacity: 0.35;
+    }
+  }
+
+  /* Token squares: fly from editor to the pet's mouth */
+  .token {
+    position: absolute;
+    left: 142px;
+    top: 94px;
+    width: 10px;
+    height: 10px;
+    background: var(--color-token-green);
+    box-shadow: 0 0 6px 1px var(--color-token-green);
+    border-radius: 1px;
+    opacity: 0;
+    animation: token-arc 6s ease-in-out infinite;
+  }
+
+  @keyframes token-arc {
+    0%,
+    68% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.6);
+    }
+    6% {
+      opacity: 1;
+      transform: translate(10px, -6px) scale(1);
+    }
+    38% {
+      opacity: 1;
+      transform: translate(102px, -41px) scale(1);
+    }
+    64% {
+      opacity: 1;
+      transform: translate(200px, 150px) scale(0.85);
+    }
+    70% {
+      opacity: 0;
+      transform: translate(204px, 162px) scale(0.4);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(204px, 162px) scale(0.4);
+    }
+  }
+
+  /* Fruit the pet eats, timed with the sprite's "eat" frames */
+  .fruit {
+    position: absolute;
+    left: 322px;
+    top: 224px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    opacity: 0;
+    animation: fruit-cycle 6s ease-in-out infinite;
+  }
+
+  @keyframes fruit-cycle {
+    0%,
+    68% {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    74% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    92% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    97%,
+    100% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+
+  /* Pet sprite: 184x184 frames on a 1472x736 sheet (8 cols x 4 rows) */
+  .pet {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    bottom: 8px;
+    width: 184px;
+    height: 184px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    animation: pet-cycle 6s steps(1) infinite;
+  }
+
+  @keyframes pet-cycle {
+    /* idle: frames 0-3 */
+    0% {
+      background-position: 0 0;
+    }
+    18.75% {
+      background-position: -184px 0;
+    }
+    37.5% {
+      background-position: -368px 0;
+    }
+    56.25% {
+      background-position: -552px 0;
+    }
+    /* eat: frames 14-19 */
+    75% {
+      background-position: -1104px -184px;
+    }
+    79.17% {
+      background-position: -1288px -184px;
+    }
+    83.33% {
+      background-position: 0 -368px;
+    }
+    87.5% {
+      background-position: -184px -368px;
+    }
+    91.67% {
+      background-position: -368px -368px;
+    }
+    95.83% {
+      background-position: -552px -368px;
+    }
+    100% {
+      background-position: 0 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .token {
+      display: none;
+    }
+
+    .code-line--accent {
+      animation: none;
+      opacity: 0.9;
+    }
+
+    .fruit {
+      animation: none;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .pet {
+      animation: none;
+      /* freeze on an eat frame, paired with the static fruit */
+      background-position: -184px -368px;
+    }
+  }
+</style>

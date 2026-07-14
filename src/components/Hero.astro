@@ -1,0 +1,42 @@
+---
+import Starfield from "./Starfield.astro";
+import PetScene from "./PetScene.astro";
+import PixelButton from "./PixelButton.astro";
+---
+
+<section id="top" class="relative isolate overflow-hidden">
+  <Starfield />
+
+  <div
+    class="relative mx-auto flex max-w-[1100px] flex-col items-center gap-12 px-6 py-16 lg:flex-row lg:items-center lg:gap-10 lg:py-24"
+  >
+    <div class="w-full min-w-0 max-w-xl text-center lg:text-left">
+      <h1 class="font-heading text-3xl leading-tight text-text sm:text-4xl lg:text-5xl">
+        Your AI tokens feed a tiny friend.
+      </h1>
+
+      <p class="mt-5 font-body text-base text-text-dim sm:text-lg">
+        Tokengochi is a desktop pet that lives on your screen and stays happy
+        on the tokens you burn in Claude Code. Every 20,000 tokens = 1 snack.
+        No accounts, no server — just a hungry pixel buddy.
+      </p>
+
+      <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
+        <PixelButton href="#download" variant="primary">
+          Download for macOS
+        </PixelButton>
+        <PixelButton href="#how-it-works" variant="secondary">
+          See how it works ↓
+        </PixelButton>
+      </div>
+
+      <p class="mt-4 font-body text-xs text-text-dim">
+        Free &amp; open source · MIT · macOS / Windows / Linux
+      </p>
+    </div>
+
+    <div class="w-full min-w-0 max-w-[440px] shrink-0">
+      <PetScene />
+    </div>
+  </div>
+</section>

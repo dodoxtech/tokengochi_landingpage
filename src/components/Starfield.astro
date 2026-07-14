@@ -1,0 +1,59 @@
+---
+// Sparse CSS-only twinkling starfield. Deterministic pseudo-random layout
+// (no JS at runtime) so SSR output is stable and there's no hydration cost.
+const STAR_COUNT = 15;
+
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
+  const top = (seededRandom(i * 12.9898) * 100).toFixed(2);
+  const left = (seededRandom(i * 78.233 + 1) * 100).toFixed(2);
+  const size = seededRandom(i * 37.719 + 2) > 0.5 ? 3 : 2;
+  const color = seededRandom(i * 4.671 + 3) > 0.5 ? "moon" : "dim";
+  const duration = (3 + seededRandom(i * 91.345 + 4) * 1.5).toFixed(2);
+  const delay = (seededRandom(i * 15.732 + 5) * 3).toFixed(2);
+  return { top, left, size, color, duration, delay };
+});
+---
+
+<div class="starfield pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+  {
+    stars.map((star) => (
+      <span
+        class="star"
+        style={`--star-top:${star.top}%; --star-left:${star.left}%; --star-size:${star.size}px; --star-duration:${star.duration}s; --star-delay:${star.delay}s; background-color: var(--color-${star.color === "moon" ? "moon-yellow" : "text-dim"});`}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .star {
+    position: absolute;
+    top: var(--star-top);
+    left: var(--star-left);
+    width: var(--star-size);
+    height: var(--star-size);
+    animation: twinkle var(--star-duration) ease-in-out var(--star-delay) infinite;
+  }
+
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star {
+      animation: none;
+      opacity: 0.55;
+    }
+  }
+</style>
