@@ -1,0 +1,141 @@
+{
+  "frames": [
+    {
+      "filename": "effects 0.aseprite",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 224,
+        "h": 308
+      },
+      "duration": 300
+    },
+    {
+      "filename": "effects 1.aseprite",
+      "frame": {
+        "x": 224,
+        "y": 0,
+        "w": 268,
+        "h": 308
+      },
+      "duration": 300
+    },
+    {
+      "filename": "effects 2.aseprite",
+      "frame": {
+        "x": 492,
+        "y": 0,
+        "w": 308,
+        "h": 308
+      },
+      "duration": 300
+    },
+    {
+      "filename": "effects 3.aseprite",
+      "frame": {
+        "x": 800,
+        "y": 0,
+        "w": 272,
+        "h": 308
+      },
+      "duration": 200
+    },
+    {
+      "filename": "effects 4.aseprite",
+      "frame": {
+        "x": 1072,
+        "y": 0,
+        "w": 228,
+        "h": 308
+      },
+      "duration": 200
+    },
+    {
+      "filename": "effects 5.aseprite",
+      "frame": {
+        "x": 0,
+        "y": 308,
+        "w": 224,
+        "h": 272
+      },
+      "duration": 400
+    },
+    {
+      "filename": "effects 6.aseprite",
+      "frame": {
+        "x": 224,
+        "y": 308,
+        "w": 268,
+        "h": 272
+      },
+      "duration": 80
+    },
+    {
+      "filename": "effects 7.aseprite",
+      "frame": {
+        "x": 492,
+        "y": 308,
+        "w": 308,
+        "h": 272
+      },
+      "duration": 80
+    },
+    {
+      "filename": "effects 8.aseprite",
+      "frame": {
+        "x": 800,
+        "y": 308,
+        "w": 272,
+        "h": 272
+      },
+      "duration": 80
+    },
+    {
+      "filename": "effects 9.aseprite",
+      "frame": {
+        "x": 1072,
+        "y": 308,
+        "w": 228,
+        "h": 272
+      },
+      "duration": 80
+    }
+  ],
+  "meta": {
+    "app": "Tokengochi image-model pipeline",
+    "version": "1.0",
+    "image": "effects.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1300,
+      "h": 580
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "zzz",
+        "from": 0,
+        "to": 2,
+        "direction": "forward"
+      },
+      {
+        "name": "heart",
+        "from": 3,
+        "to": 4,
+        "direction": "forward"
+      },
+      {
+        "name": "exclaim",
+        "from": 5,
+        "to": 5,
+        "direction": "forward"
+      },
+      {
+        "name": "dust",
+        "from": 6,
+        "to": 9,
+        "direction": "forward"
+      }
+    ]
+  }
+}

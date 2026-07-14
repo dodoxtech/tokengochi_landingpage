@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@import "@fontsource-variable/dm-sans";
+@import "@fontsource/pixelify-sans/latin-400.css";
+
+@theme {
+  /* Cozy pixel night desk — color tokens extracted from cover art + app icon */
+  --color-night: #141026;
+  --color-night-soft: #241e42;
+  --color-pet-orange: #f5a73b;
+  --color-pet-deep: #ea7a2b;
+  --color-token-green: #6ee7a0;
+  --color-moon-yellow: #ffd466;
+  --color-cream: #fbf0d7;
+  --color-ink: #1d1830;
+  --color-text: #f2ede2;
+  --color-text-dim: #a79fc2;
+
+  --font-heading: "Pixelify Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-night);
+    color: var(--color-text);
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+  }
+
+  ::selection {
+    background-color: var(--color-pet-orange);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-token-green);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .pixelated {
+    image-rendering: pixelated;
+  }
+}

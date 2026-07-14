@@ -1,7 +1,7 @@
 ---
 title: LP-01 - Scaffold Project and Design System
 tags: [task, landing-page]
-status: todo
+status: done
 priority: high
 created: 2026-07-14
 due:
@@ -49,20 +49,27 @@ Contrast: `--color-text` on `--color-night` and `--color-ink` on `--color-cream`
 - Respect `prefers-reduced-motion` in every animation (this rule applies to all LP tasks).
 
 ## Acceptance criteria
-- [ ] `npm create astro` scaffold committed; `npm run dev` and `npm run build` work
-- [ ] Tailwind 4 configured with all tokens above in a single `@theme` block in `src/styles/global.css`
-- [ ] Fonts self-hosted via `@fontsource-variable/dm-sans` + `@fontsource/pixelify-sans` (no runtime Google Fonts request)
-- [ ] `PixelCard` and `PixelButton` Astro components exist implementing the border/hard-shadow rules, with hover state (translate 2px into shadow) and visible focus ring (`outline: 3px solid var(--color-token-green)`)
-- [ ] Sprite assets copied from `../tokengochi/ui/assets/sprites/` (hatchling, food items, effects) into `src/assets/sprites/` with a README noting the source path
-- [ ] Base layout (`Layout.astro`) with `<html lang="en">`, dark bg, font preloads, and empty `<slot />`
+- [x] `npm create astro` scaffold committed; `npm run dev` and `npm run build` work
+- [x] Tailwind 4 configured with all tokens above in a single `@theme` block in `src/styles/global.css`
+- [x] Fonts self-hosted via `@fontsource-variable/dm-sans` + `@fontsource/pixelify-sans` (no runtime Google Fonts request)
+- [x] `PixelCard` and `PixelButton` Astro components exist implementing the border/hard-shadow rules, with hover state (translate 2px into shadow) and visible focus ring (`outline: 3px solid var(--color-token-green)`)
+- [x] Sprite assets copied from `../tokengochi/ui/assets/sprites/` (hatchling, food items, effects) into `src/assets/sprites/` with a README noting the source path
+- [x] Base layout (`Layout.astro`) with `<html lang="en">`, dark bg, font preloads, and empty `<slot />`
 
 ## Subtasks
-- [ ] Scaffold Astro + Tailwind 4 + TypeScript strict
-- [ ] Define `@theme` tokens and global styles (selection color: pet-orange; scrollbar styling optional)
-- [ ] Add fonts and preload the two files used above the fold
-- [ ] Build `PixelCard` / `PixelButton` primitives
-- [ ] Copy and organize sprite assets; add `image-rendering: pixelated` utility class
-- [ ] Write an ADR in `docs/04-Decisions/` for the Astro + Tailwind stack choice
+- [x] Scaffold Astro + Tailwind 4 + TypeScript strict
+- [x] Define `@theme` tokens and global styles (selection color: pet-orange; scrollbar styling optional)
+- [x] Add fonts and preload the two files used above the fold
+- [x] Build `PixelCard` / `PixelButton` primitives
+- [x] Copy and organize sprite assets; add `image-rendering: pixelated` utility class
+- [x] Write an ADR in `docs/04-Decisions/` for the Astro + Tailwind stack choice
+
+## Notes
+> Scaffolded on **Astro 7** (npm latest), not Astro 5 as originally specced — see
+> [[001 - Astro and Tailwind Stack Choice]] for why. `astro.config.mjs` wires up
+> `@tailwindcss/vite`; theme tokens, font imports/preloads, and the pixel
+> border/shadow primitives are all in place and verified via `npm run build`
+> and `npm run dev`.
 
 ## Links
 - [[Tasks MOC]]
