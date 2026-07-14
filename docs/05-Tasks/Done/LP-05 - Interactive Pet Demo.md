@@ -1,7 +1,7 @@
 ---
 title: LP-05 - Interactive Pet Demo
 tags: [task, landing-page]
-status: todo
+status: done
 priority: medium
 created: 2026-07-14
 due:
@@ -22,18 +22,18 @@ due:
 - Caption under the strip: `This is the actual pet. In the real app, your Claude Code usage does the feeding.`
 
 ## Acceptance criteria
-- [ ] Feed interaction works with mouse, touch, and keyboard (Enter/Space on button)
-- [ ] No layout shift when island hydrates; island JS ≤ ~5 KB gzipped
-- [ ] State machine never deadlocks (spam-click test: 20 rapid clicks)
-- [ ] Reduced-motion variant fully functional
-- [ ] Works at 320px (strip scrolls or scales; button always reachable)
+- [x] Feed interaction works with mouse, touch, and keyboard (Enter/Space on button)
+- [x] No layout shift when island hydrates; island JS ≤ ~5 KB gzipped
+- [x] State machine never deadlocks (spam-click test: 20 rapid clicks)
+- [x] Reduced-motion variant fully functional
+- [x] Works at 320px (strip scrolls or scales; button always reachable)
 
 ## Subtasks
-- [ ] Sprite state machine (idle/walk/eat + facing)
-- [ ] Food spawn/queue logic
-- [ ] XP toast + aria-live
-- [ ] Overfeed easter egg
-- [ ] Touch/keyboard/reduced-motion pass
+- [x] Sprite state machine (idle/walk/eat + facing)
+- [x] Food spawn/queue logic
+- [x] XP toast + aria-live
+- [x] Overfeed easter egg
+- [x] Touch/keyboard/reduced-motion pass
 
 ## Links
 - [[Tasks MOC]]

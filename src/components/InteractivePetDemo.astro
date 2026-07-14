@@ -1,0 +1,479 @@
+---
+import PixelButton from "./PixelButton.astro";
+import hatchlingSheet from "../assets/sprites/hatchling/hatchling.png?url";
+import gagSheet from "../assets/sprites/hatchling/hatchling-gag-expressions.png?url";
+import foodDefault from "../assets/sprites/items/food-default-sprite-32x32.png?url";
+import foodSushi from "../assets/sprites/items/food-sushi-sprite-32x32.png?url";
+import foodBanhMi from "../assets/sprites/items/food-banh-mi-sprite-32x32.png?url";
+
+const foods = [foodDefault, foodSushi, foodBanhMi];
+---
+
+<section id="pet-demo" class="relative bg-night px-6 py-16 sm:py-20 lg:py-24">
+  <div class="mx-auto max-w-[1100px]">
+    <div class="max-w-2xl">
+      <h2 class="font-heading text-3xl leading-tight text-text sm:text-4xl">
+        Try the feeding loop
+      </h2>
+      <p class="mt-4 font-body text-base leading-7 text-text-dim sm:text-lg">
+        Drop a snack, watch the hatchling run over, and get a tiny hit of progress.
+      </p>
+    </div>
+
+    <div
+      class="pet-demo mt-10"
+      data-pet-demo
+      data-hatchling-sheet={hatchlingSheet}
+      data-gag-sheet={gagSheet}
+      data-foods={JSON.stringify(foods)}
+    >
+      <div class="demo-shell">
+        <div class="demo-track-wrap">
+          <div
+            class="demo-track"
+            role="img"
+            aria-label="A pixel hatchling wanders along a desktop taskbar and eats dropped snacks"
+          >
+            <div class="desktop-window desktop-window--left" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="desktop-window desktop-window--right" aria-hidden="true">
+              <span></span><span></span>
+            </div>
+            <div class="food-layer" data-food-layer aria-hidden="true"></div>
+            <div
+              class="demo-pet pixelated is-idle"
+              data-pet
+              style={`--pet-sheet: url(${hatchlingSheet}); --gag-sheet: url(${gagSheet});`}
+              aria-hidden="true"
+            ></div>
+            <div class="taskbar" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-controls">
+          <PixelButton class="snack-button" variant="primary">
+            Drop a snack 🍎
+          </PixelButton>
+          <p class="demo-counter" aria-hidden="true">
+            Queue: <span data-queue-count>0</span>/3
+          </p>
+        </div>
+
+        <p class="demo-caption">
+          This is the actual pet. In the real app, your Claude Code usage does the feeding.
+        </p>
+
+        <p class="full-tip" data-full-tip hidden>
+          Daily caps keep me from overeating in the real app too!
+        </p>
+        <div class="toast-layer" data-toast-layer aria-hidden="true"></div>
+        <p class="sr-only" aria-live="polite" data-live-region></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initPetDemos } from "../scripts/pet-demo";
+
+  initPetDemos();
+</script>
+
+<style>
+  .pet-demo {
+    position: relative;
+  }
+
+  .demo-shell {
+    position: relative;
+    overflow: hidden;
+    border: 3px solid var(--color-ink);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(110, 231, 160, 0.08), rgba(110, 231, 160, 0)),
+      var(--color-night-soft);
+    box-shadow: 8px 8px 0 var(--color-ink);
+  }
+
+  .demo-track-wrap {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border-bottom: 3px solid var(--color-ink);
+    background:
+      linear-gradient(135deg, rgba(255, 212, 102, 0.28), transparent 58%),
+      var(--color-cream);
+  }
+
+  .demo-track {
+    position: relative;
+    min-width: 560px;
+    height: 242px;
+    overflow: hidden;
+  }
+
+  .desktop-window {
+    position: absolute;
+    top: 28px;
+    border: 3px solid var(--color-ink);
+    border-radius: 5px;
+    background: rgba(36, 30, 66, 0.92);
+    box-shadow: 4px 4px 0 rgba(29, 24, 48, 0.2);
+  }
+
+  .desktop-window span {
+    display: block;
+    height: 5px;
+    margin: 8px;
+    border-radius: 1px;
+    background: var(--color-text-dim);
+    opacity: 0.7;
+  }
+
+  .desktop-window--left {
+    left: 24px;
+    width: 136px;
+    height: 82px;
+  }
+
+  .desktop-window--right {
+    right: 34px;
+    top: 42px;
+    width: 112px;
+    height: 68px;
+  }
+
+  .desktop-window--left span:nth-child(1) {
+    width: 72%;
+    background: var(--color-token-green);
+    opacity: 0.9;
+  }
+
+  .desktop-window--left span:nth-child(2) {
+    width: 46%;
+  }
+
+  .desktop-window--left span:nth-child(3),
+  .desktop-window--right span:nth-child(1) {
+    width: 58%;
+  }
+
+  .desktop-window--right span:nth-child(2) {
+    width: 74%;
+    background: var(--color-moon-yellow);
+    opacity: 0.9;
+  }
+
+  .food-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  :global(.demo-food) {
+    position: absolute;
+    left: var(--food-x);
+    bottom: 38px;
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    filter: drop-shadow(3px 4px 0 rgba(29, 24, 48, 0.22));
+  }
+
+  :global(.demo-food.is-eaten) {
+    animation: food-eat 260ms steps(3, end) forwards;
+  }
+
+  .demo-pet {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    bottom: 22px;
+    width: 184px;
+    height: 184px;
+    background-image: var(--pet-sheet);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    transform: translateX(36px) scale(0.74);
+    transform-origin: bottom left;
+    transition-property: transform;
+    transition-timing-function: linear;
+  }
+
+  .demo-pet.is-facing-left {
+    transform: translateX(var(--pet-x, 36px)) scaleX(-1) scale(0.74);
+  }
+
+  .demo-pet.is-idle {
+    animation: demo-idle 900ms steps(1) infinite;
+  }
+
+  .demo-pet.is-walk {
+    animation: demo-walk 640ms steps(1) infinite;
+  }
+
+  .demo-pet.is-eat {
+    animation: demo-eat 620ms steps(1) 1;
+  }
+
+  .demo-pet.is-full {
+    background-image: var(--gag-sheet);
+    background-position: -736px 0;
+    animation: none;
+  }
+
+  .taskbar {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 16px;
+    display: flex;
+    gap: 8px;
+    height: 22px;
+    align-items: center;
+    border: 3px solid var(--color-ink);
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgba(110, 231, 160, 0.16) 0 18px,
+        rgba(255, 212, 102, 0.14) 18px 34px
+      ),
+      var(--color-night-soft);
+    padding: 0 8px;
+  }
+
+  .taskbar span {
+    width: 18px;
+    height: 10px;
+    border: 2px solid var(--color-ink);
+    border-radius: 2px;
+    background: var(--color-cream);
+  }
+
+  .demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  :global(.snack-button.is-denied) {
+    animation: button-deny 240ms steps(2, end);
+  }
+
+  .demo-counter {
+    color: var(--color-text-dim);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+  }
+
+  .demo-caption {
+    max-width: 62ch;
+    padding: 0 18px 20px;
+    color: var(--color-text-dim);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .full-tip {
+    position: absolute;
+    right: 18px;
+    bottom: 88px;
+    max-width: 280px;
+    border: 3px solid var(--color-ink);
+    border-radius: 5px;
+    background: var(--color-cream);
+    padding: 10px 12px;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.35;
+    box-shadow: 4px 4px 0 var(--color-ink);
+  }
+
+  .toast-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  :global(.xp-toast) {
+    position: absolute;
+    left: var(--toast-x);
+    bottom: 162px;
+    z-index: 4;
+    color: var(--color-token-green);
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    line-height: 1;
+    text-shadow: 3px 3px 0 var(--color-ink);
+    animation: xp-float 760ms ease-out forwards;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (min-width: 768px) {
+    .demo-track {
+      min-width: 760px;
+      height: 264px;
+    }
+
+    .demo-pet {
+      bottom: 24px;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .demo-pet {
+      will-change: transform, background-position;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-pet,
+    .demo-pet.is-idle,
+    .demo-pet.is-walk,
+    .demo-pet.is-eat,
+    :global(.demo-food),
+    :global(.demo-food.is-eaten),
+    :global(.xp-toast),
+    :global(.snack-button.is-denied) {
+      animation: none;
+      transition: none;
+    }
+
+    :global(.demo-food.is-eaten) {
+      opacity: 0;
+    }
+
+    :global(.xp-toast) {
+      opacity: 1;
+      transform: translateY(-14px);
+    }
+  }
+
+  @keyframes demo-idle {
+    0% {
+      background-position: 0 0;
+    }
+    25% {
+      background-position: -184px 0;
+    }
+    50% {
+      background-position: -368px 0;
+    }
+    75%,
+    100% {
+      background-position: -552px 0;
+    }
+  }
+
+  @keyframes demo-walk {
+    0% {
+      background-position: -736px 0;
+    }
+    16.67% {
+      background-position: -920px 0;
+    }
+    33.33% {
+      background-position: -1104px 0;
+    }
+    50% {
+      background-position: -1288px 0;
+    }
+    66.67% {
+      background-position: 0 -184px;
+    }
+    83.33%,
+    100% {
+      background-position: -184px -184px;
+    }
+  }
+
+  @keyframes demo-eat {
+    0% {
+      background-position: -1104px -184px;
+    }
+    16.67% {
+      background-position: -1288px -184px;
+    }
+    33.33% {
+      background-position: 0 -368px;
+    }
+    50% {
+      background-position: -184px -368px;
+    }
+    66.67% {
+      background-position: -368px -368px;
+    }
+    83.33%,
+    100% {
+      background-position: -552px -368px;
+    }
+  }
+
+  @keyframes food-eat {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    34% {
+      opacity: 1;
+      transform: translateY(4px) scale(0.72);
+    }
+    67% {
+      opacity: 1;
+      transform: translateY(8px) scale(0.42);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(10px) scale(0.1);
+    }
+  }
+
+  @keyframes xp-float {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    14% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+  }
+
+  @keyframes button-deny {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    33% {
+      transform: translateX(-4px);
+    }
+    66% {
+      transform: translateX(4px);
+    }
+  }
+</style>
