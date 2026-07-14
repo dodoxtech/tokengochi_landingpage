@@ -1,7 +1,7 @@
 ---
 title: LP-04 - Features Grid
 tags: [task, landing-page]
-status: todo
+status: done
 priority: medium
 created: 2026-07-14
 due:
@@ -30,17 +30,17 @@ due:
 - Reuse the LP-03 IntersectionObserver reveal utility.
 
 ## Acceptance criteria
-- [ ] Bento layout with clear visual hierarchy (emotional > technical) at 1024px+; clean single column at 320px
-- [ ] Every claim in the copy is true per `../tokengochi/docs/product.md` and README (no invented specs)
-- [ ] Walk animation loops without jank and freezes under reduced motion
-- [ ] Semantic structure: section h2 + each cell an `<article>` with h3
+- [x] Bento layout with clear visual hierarchy (emotional > technical) at 1024px+; clean single column at 320px
+- [x] Every claim in the copy is true per `../tokengochi/docs/product.md` and README (no invented specs)
+- [x] Walk animation loops without jank and freezes under reduced motion
+- [x] Semantic structure: section h2 + each cell an `<article>` with h3
 
 ## Subtasks
-- [ ] Bento grid layout
-- [ ] Walk-cycle cell
-- [ ] Cosmetics/progression cell (arrange item sprites)
-- [ ] Four compact trust cells with stat chips
-- [ ] Copy pass against source docs
+- [x] Bento grid layout
+- [x] Walk-cycle cell
+- [x] Cosmetics/progression cell (arrange item sprites)
+- [x] Four compact trust cells with stat chips
+- [x] Copy pass against source docs
 
 ## Links
 - [[Tasks MOC]]

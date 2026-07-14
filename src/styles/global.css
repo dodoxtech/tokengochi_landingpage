@@ -4,7 +4,7 @@
 @import "@fontsource/pixelify-sans/latin-400.css";
 
 @theme {
-  /* Cozy pixel night desk — color tokens extracted from cover art + app icon */
+  /* Cozy pixel night desk - color tokens extracted from cover art + app icon */
   --color-night: #141026;
   --color-night-soft: #241e42;
   --color-pet-orange: #f5a73b;
