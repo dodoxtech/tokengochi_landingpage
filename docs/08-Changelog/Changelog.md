@@ -7,6 +7,7 @@ created: 2026-07-02
 # Changelog
 
 ## [Unreleased]
+- Changed the download section's macOS trust guidance to reflect that macOS builds are now signed and notarized (no more Gatekeeper warning or xattr workaround); Windows/Linux guidance unchanged.
 - Changed the interactive pet demo from manual snack drops to a simulated prompt, agent run, token meter, and automatic snack drop at 20,000 tokens.
 - Fixed pet movement facing direction and improved the desktop layout for the lovable-underneath features section.
 - Added footer links, local SEO/social metadata, JSON-LD, crawler files, and generated OG/favicon assets.

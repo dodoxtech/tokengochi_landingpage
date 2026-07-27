@@ -6,34 +6,44 @@ import hatchlingSheet from "../assets/sprites/hatchling/hatchling.png?url";
 const releasesUrl = "https://github.com/dodoxtech/tokengochi/releases/latest";
 const kofiUrl = "https://ko-fi.com/dodoxtech";
 
+const releaseTag = "v0.2.11";
+const releaseVersion = "0.2.11";
+const assetBaseUrl = `https://github.com/dodoxtech/tokengochi/releases/download/${releaseTag}/`;
+
+const macAarch64Url = `${assetBaseUrl}tokengochi_${releaseVersion}_aarch64.dmg`;
+const macX64Url = `${assetBaseUrl}tokengochi_${releaseVersion}_x64.dmg`;
+const windowsUrl = `${assetBaseUrl}tokengochi_${releaseVersion}_x64-setup.exe`;
+const linuxDebUrl = `${assetBaseUrl}tokengochi_${releaseVersion}_amd64.deb`;
+const linuxAppImageUrl = `${assetBaseUrl}tokengochi_${releaseVersion}_amd64.AppImage`;
+
 const platforms = [
   {
     os: "macOS",
     icon: "mac",
-    files: ["Tokengochi_x.y.z_aarch64.dmg", "Tokengochi_x.y.z_x64.dmg"],
+    files: [
+      { name: `tokengochi_${releaseVersion}_aarch64.dmg`, url: macAarch64Url },
+      { name: `tokengochi_${releaseVersion}_x64.dmg`, url: macX64Url },
+    ],
     note: "Choose the DMG that matches your Mac chip.",
   },
   {
     os: "Windows",
     icon: "windows",
-    files: ["Tokengochi_x.y.z_x64-setup.exe"],
+    files: [{ name: `tokengochi_${releaseVersion}_x64-setup.exe`, url: windowsUrl }],
     note: "Use the x64 setup file from the latest release.",
   },
   {
     os: "Linux",
     icon: "linux",
-    files: ["tokengochi_x.y.z_amd64.deb", "tokengochi_x.y.z_amd64.AppImage"],
+    files: [
+      { name: `tokengochi_${releaseVersion}_amd64.deb`, url: linuxDebUrl },
+      { name: `tokengochi_${releaseVersion}_amd64.AppImage`, url: linuxAppImageUrl },
+    ],
     note: "Ubuntu and Debian users want the .deb; other distros can use AppImage.",
   },
 ];
 
 const warnings = [
-  {
-    os: "macOS",
-    steps:
-      'Gatekeeper blocks the app: "cannot be opened because the developer cannot be verified". Right-click the app, choose Open, then choose Open again in the dialog. If that does not work, run the command below in Terminal.',
-    code: "xattr -dr com.apple.quarantine /Applications/Tokengochi.app",
-  },
   {
     os: "Windows",
     steps:
@@ -59,17 +69,18 @@ const warnings = [
           Bring the hungry little desk friend home.
         </h2>
         <p class="mt-4 font-body text-base leading-7 text-text-dim sm:text-lg">
-          Download Tokengochi from GitHub Releases. The installer link works
-          without JavaScript; your browser can make it OS-specific when it can
-          identify your platform.
+          Click Download to grab the installer directly. It defaults to
+          macOS, and your browser can switch it to Windows or Linux when it
+          can identify your platform.
         </p>
 
         <div class="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
           <PixelButton
-            href={releasesUrl}
+            href={macAarch64Url}
             variant="primary"
             class="download-primary"
             data-download-primary
+            download
           >
             Download
           </PixelButton>
@@ -109,7 +120,7 @@ const warnings = [
               </div>
               <div class="platform-files" aria-label={`${platform.os} release files`}>
                 {platform.files.map((file) => (
-                  <a href={releasesUrl}>{file}</a>
+                  <a href={file.url} download>{file.name}</a>
                 ))}
               </div>
             </article>
@@ -120,10 +131,11 @@ const warnings = [
 
     <PixelCard class="warning-card mt-10">
       <div class="warning-heading" data-reveal>
-        <h3>Your OS will act suspicious. That's expected.</h3>
+        <h3>macOS build is signed &amp; notarized. Windows may still act suspicious.</h3>
         <p>
-          MVP builds are unsigned, so first launch has one extra trust step.
-          After that, Tokengochi opens normally.
+          The macOS app opens right away — no extra trust step needed. Windows
+          and Linux builds aren't signed yet, so first launch there has one
+          extra step.
         </p>
       </div>
 
@@ -171,7 +183,14 @@ const warnings = [
 
   initReveals();
 
-  const releasesUrl = "https://github.com/dodoxtech/tokengochi/releases/latest";
+  const releaseTag = "v0.2.11";
+  const releaseVersion = "0.2.11";
+  const assetBaseUrl = `https://github.com/dodoxtech/tokengochi/releases/download/${releaseTag}/`;
+  const macAarch64Url = `${assetBaseUrl}tokengochi_${releaseVersion}_aarch64.dmg`;
+  const macX64Url = `${assetBaseUrl}tokengochi_${releaseVersion}_x64.dmg`;
+  const windowsUrl = `${assetBaseUrl}tokengochi_${releaseVersion}_x64-setup.exe`;
+  const linuxDebUrl = `${assetBaseUrl}tokengochi_${releaseVersion}_amd64.deb`;
+
   const primaryDownload = document.querySelector<HTMLAnchorElement>(
     "[data-download-primary]",
   );
@@ -180,6 +199,9 @@ const warnings = [
     const nav = navigator as Navigator & {
       userAgentData?: {
         platform?: string;
+        getHighEntropyValues?: (
+          hints: string[],
+        ) => Promise<{ architecture?: string }>;
       };
     };
     const platform = nav.userAgentData?.platform ?? nav.platform ?? "";
@@ -193,10 +215,33 @@ const warnings = [
           ? "Linux"
           : "";
 
-    primaryDownload.href = releasesUrl;
+    if (detectedOs === "Windows") {
+      primaryDownload.href = windowsUrl;
+      primaryDownload.textContent = "Download for Windows";
+    } else if (detectedOs === "Linux") {
+      primaryDownload.href = linuxDebUrl;
+      primaryDownload.textContent = "Download for Linux";
+    } else if (detectedOs === "macOS") {
+      primaryDownload.textContent = "Download for macOS";
 
-    if (detectedOs) {
-      primaryDownload.textContent = `Download for ${detectedOs}`;
+      const isAppleSilicon =
+        userAgent.includes("arm64") || userAgent.includes("aarch64");
+
+      if (isAppleSilicon) {
+        primaryDownload.href = macAarch64Url;
+      } else if (nav.userAgentData?.getHighEntropyValues) {
+        nav.userAgentData
+          .getHighEntropyValues(["architecture"])
+          .then((values) => {
+            primaryDownload.href =
+              values.architecture === "arm" ? macAarch64Url : macX64Url;
+          })
+          .catch(() => {
+            primaryDownload.href = macAarch64Url;
+          });
+      } else {
+        primaryDownload.href = macAarch64Url;
+      }
     }
   }
 
